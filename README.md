@@ -1,4 +1,4 @@
-# Enhanced Flask App Overview for Airbnb Investment Analysis
+#   Overview for AI Airbnb Investment Analysis App
 
 This document provides an enriched overview of our Flask application tailored for Airbnb investment analysis, incorporating the graphical user interface (GUI) visuals and functionalities along with the backend NLP logic for investment insights.
 
