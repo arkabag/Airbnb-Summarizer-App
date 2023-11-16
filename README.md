@@ -1,6 +1,6 @@
 # Enhanced Flask App Overview for Airbnb Investment Analysis
 
-This document provides an enriched overview of our Flask application tailored for Airbnb investment analysis, incorporating the graphical user interface (GUI) visuals and functionalities.
+This document provides an enriched overview of our Flask application tailored for Airbnb investment analysis, incorporating the graphical user interface (GUI) visuals and functionalities along with the backend NLP logic for investment insights.
 
 ## Backend Architecture
 
@@ -45,6 +45,24 @@ The summary pages provide:
 - **Database Integration**:
   - Leverages PostgreSQL for robust data management and swift access.
 
+## Enhancing the LLM Framework for Investment Insights
+
+We are looking to further enhance our application's framework using LlamaIndex and Langchain to transform Airbnb reviews into structured insights for investors. This will involve:
+
+### Strategy for Extracting Insights
+- Developing prompts to guide LLMs in extracting specific information needed across several key areas like property performance metrics, investment potential indicators, trend analysis, and more.
+
+### Integrating LlamaIndex and OpenAI API
+- Defining output schemas and using function calling to turn unstructured review text into structured data.
+- Running programs for structured output and automating workflows for summarization and data extraction processes.
+
+### Structuring Insights in a Database
+- Organizing insights within a database using PostgreSQL and pgvector to allow efficient querying, analysis, and visualization.
+
+## Next Steps for AI-Driven Analysis
+- Integrating agents for structured output extraction from reviews.
+- Implementing chain summarization methods for neighborhood-specific investment analysis.
+
 ## Getting Started
 
 To launch the application:
@@ -55,4 +73,12 @@ To launch the application:
 
 ## Conclusion
 
-Our Flask application emerges as a formidable asset for Airbnb market investors, melding sophisticated data processing capabilities with an accessible and interactive GUI. It empowers users to make well-informed investment choices guided by structured insights distilled from voluminous Airbnb review data and market analytics.
+With the integration of advanced LLM capabilities, our Flask application is set to become a more powerful tool for investors in the Airbnb market. The future enhancements will automate the extraction of neighborhood-specific investment insights, providing a data-rich environment for making informed decisions.
+
+For more details on integrating AI agents and chain summarization methods, refer to the following resources:
+- [OpenAI Agent Guide](https://gpt-index.readthedocs.io/en/stable/module_guides/deploying/agents/modules.html#openai-agent)
+- [SQL Chain Summarization](https://js.langchain.com/docs/modules/chains/popular/sqlite)
+- [Langchain Summarize](https://js.langchain.com/docs/modules/chains/popular/summarize)
+- [Sequential Chains](https://js.langchain.com/docs/modules/chains/foundational/sequential_chains)
+- [Document Map Reduce](https://js.langchain.com/docs/modules/chains/document/map_reduce)
+- [Tree of Thoughts](https://drive.google.com/drive/folders/1INYQdvdXYwXK--mEXZ6NM6IxdlcAQZei)
