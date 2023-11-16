@@ -1,87 +1,58 @@
-# Airbnb-Summarizer-App
-# Airbnb Investment Analysis Using LLMs
+# Enhanced Flask App Overview for Airbnb Investment Analysis
 
-## Overview
-This document outlines a strategic approach to leverage LlamaIndex and Langchain capabilities for transforming Airbnb reviews into structured insights. These insights are crucial for Airbnb investors, providing them with comprehensive analysis and data-driven decision-making tools.
+This document provides an enriched overview of our Flask application tailored for Airbnb investment analysis, incorporating the graphical user interface (GUI) visuals and functionalities.
 
-## Strategy for Extracting Insights
-We focus on several key areas:
+## Backend Architecture
 
-### 1. Property Performance Metrics
-- **Objective**: Identify and quantify sentiment expressions and correlate them with property features.
-- **Method**: Use natural language processing (NLP) techniques.
+### 1. Server Configuration (`server.py`)
+- Manages web requests and integrates Python modules for data processing and analysis.
 
-### 2. Investment Potential Indicators
-- **Objective**: Gauge desirability based on amenities and attractions.
-- **Method**: Detect and classify mentions, assessing frequency and sentiment.
+### 2. Database Interaction (`PostgresHelper.py`)
+- Handles connections and queries with the PostgreSQL database, crucial for data management.
 
-### 3. Trend Analysis
-- **Objective**: Capture trends and seasonality effects in sentiment.
-- **Method**: Analyze sentiment over time, focusing on pre- and post-event changes.
+### 3. Analysis Modules
+- **Speed and Distance Calculations** (`speed_distance.py`):
+  - Offers tools for calculating distances and speeds, which are instrumental in property evaluation.
+- **Review Summarizer** (`airdna_review_summarizer.py`):
+  - The backbone for extracting and summarizing Airbnb reviews, employing NLP for sentiment analysis.
 
-### 4. Comparative Insights
-- **Objective**: Establish local market trends through comparative analysis.
-- **Method**: Aggregate and compare property features within specific locales.
+## Frontend Interface
 
-### 5. Location Desirability
-- **Objective**: Evaluate appeal based on location, transportation, and neighborhood.
-- **Method**: Extract and categorize relevant comments.
+### 1. Main Page (`index.html`)
+- Serves as the app's entry point, featuring a straightforward design for user engagement.
 
-### 6. Host Quality Indicators
-- **Objective**: Gauge host impact on guest satisfaction.
-- **Method**: Analyze review sentiments associated with each host.
+### 2. Review Summary Display (`show_review_summary.html`)
+- A specialized page to showcase the AI-generated summaries of Airbnb reviews, enhancing user experience with a digestible format.
 
-Integrating these features involves developing specific LLM prompts for targeted information extraction.
+## Interactive Map and Summary Visualization
 
-## Integrating LlamaIndex and OpenAI API
-To integrate LlamaIndex's structured data extraction with the Airbnb summarizer app:
+The application boasts a dynamic map visualization, utilizing Leaflet.js, which allows users to:
+- View the geographic distribution of properties.
+- Click on property markers to reveal a pop-up with essential details and a link to a detailed summary.
 
-1. **Define Output Schema**:
-   - Create Pydantic models for structured data extraction from reviews.
+The summary pages provide:
+- **AI-Generated Summary**: A comprehensive overview capturing the essence of guest reviews.
+- **AI-Generated Critical Review**: A breakdown of property highlights and areas for improvement, aiding in investment decisions.
 
-2. **Use Function Calling**:
-   - Leverage LlamaIndex's function calling feature to structure review text.
+## Application Features
 
-3. **Run Program for Structured Output**:
-   - Utilize OpenAIPydanticProgram for converting summaries to structured data.
+- **Review Analysis**:
+  - Processes and condenses Airbnb reviews into actionable insights for investors.
+- **Market Trends**:
+  - Delivers local market trend analysis to uncover investment opportunities.
+- **User Interaction**:
+  - Features an intuitive interface for data input and retrieval of analysis results.
+- **Database Integration**:
+  - Leverages PostgreSQL for robust data management and swift access.
 
-4. **Automate Workflows**:
-   - Integrate summarization and data extraction processes into existing Python code for automation.
+## Getting Started
 
-## Structuring Insights in a Database
-Considering the use of PostgreSQL and pgvector, structure the insights in a columnar format:
+To launch the application:
+1. Install Python and Flask.
+2. Configure the PostgreSQL database.
+3. Execute `server.py` to initialize the Flask server.
+4. Navigate to the app using a web browser at the specified local host address.
 
-### Property Performance Metrics
-- **Columns**: Property ID, Average Rating, Booking Frequency, Positive Sentiment Score, Negative Sentiment Score, Common Keywords.
-- **Description**: Metrics and phrases indicating property popularity or issues.
+## Conclusion
 
-### Investment Potential Indicators
-- **Columns**: Property ID, Amenities (as a JSON array or similar), Attraction Proximity, Amenity Sentiment Score.
-- **Description**: Lists of amenities and their desirability ratings.
-
-### Trend Analysis
-- **Columns**: Property ID, Date, Sentiment Score, Seasonal Trend Identifier.
-- **Description**: Time-stamped sentiment scores to track trends and seasonal effects.
-
-### Comparative Insights
-- **Columns**: Zipcode/Geohash, Average Bedrooms, Average Bathrooms, Average Rating.
-- **Description**: Aggregate data per geographic area for market comparison.
-
-### Location Desirability
-- **Columns**: Property ID, Transport Links Rating, Neighborhood Quality Rating, Nearby Attractions.
-- **Description**: Ratings and descriptions of location-related factors.
-
-### Host Quality Indicators
-- **Columns**: Host ID, Average Guest Satisfaction Score, Positive/Negative Review Count.
-- **Description**: Metrics to evaluate host performance once you have host identification data.
-
-This structure will help in effectively querying, analyzing, and visualizing the data, providing valuable insights to investors. Each column should be designed to store the most relevant data type (numeric, text, JSON, etc.), ensuring efficient data processing and retrieval.
-
-## Next Steps
-- Explore integrating agents for structured output extraction: [OpenAI Agent Guide](https://gpt-index.readthedocs.io/en/stable/module_guides/deploying/agents/modules.html#openai-agent)
-- Investigate chain summarization methods for neighborhood-specific investment analysis:
-  - [SQL Chain Summarization](https://js.langchain.com/docs/modules/chains/popular/sqlite)
-  - [Langchain Summarize](https://js.langchain.com/docs/modules/chains/popular/summarize)
-  - [Sequential Chains](https://js.langchain.com/docs/modules/chains/foundational/sequential_chains)
-  - [Document Map Reduce](https://js.langchain.com/docs/modules/chains/document/map_reduce)
-  - [Tree of Thoughts](https://drive.google.com/drive/folders/1INYQdvdXYwXK--mEXZ6NM6IxdlcAQZei)
+Our Flask application emerges as a formidable asset for Airbnb market investors, melding sophisticated data processing capabilities with an accessible and interactive GUI. It empowers users to make well-informed investment choices guided by structured insights distilled from voluminous Airbnb review data and market analytics.
