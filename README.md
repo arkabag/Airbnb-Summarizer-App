@@ -51,6 +51,7 @@ We are looking to further enhance our application's framework using LlamaIndex a
 
 ### Strategy for Extracting Insights
 - Developing prompts to guide LLMs in extracting specific information needed across several key areas like property performance metrics, investment potential indicators, trend analysis, and more.
+- This would start with creating Pydantic models that represent structured data we wantto extract from reviews, like property features, guest sentiments, and host information. 
 
 ### Integrating LlamaIndex and OpenAI API
 - Defining output schemas and using function calling to turn unstructured review text into structured data.
