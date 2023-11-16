@@ -34,7 +34,7 @@ We focus on several key areas:
 Integrating these features involves developing specific LLM prompts for targeted information extraction.
 
 ## Integrating LlamaIndex and OpenAI API
-To integrate LlamaIndex's structured data extraction with your Airbnb summarizer app:
+To integrate LlamaIndex's structured data extraction with the Airbnb summarizer app:
 
 1. **Define Output Schema**:
    - Create Pydantic models for structured data extraction from reviews.
