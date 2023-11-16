@@ -50,7 +50,7 @@ import time
 cost_per_100k_tokens = 0.80
 
 
-class AirDNAReviewSummarizer(object):
+class AirBnbReviewSummarizer(object):
     def __init__(self):
         self.postgres_helper = PostgresHelper()
 
@@ -399,7 +399,7 @@ class AirDNAReviewSummarizer(object):
 
 
 if __name__ == '__main__':
-    generator = AirDNAReviewSummarizer()
+    generator = AirBnbReviewSummarizer()
     #generator.generate_clean_csv(10)
     #generator.generate_openai_jsonl(10)
     generator.generate_property_summary_from_basemodel(10)
