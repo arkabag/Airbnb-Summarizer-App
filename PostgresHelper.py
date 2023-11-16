@@ -8,10 +8,10 @@ class PostgresHelper(object):
         '''
 
         POSTGRES_HOST = 'localhost'
-        POSTGRES_USERNAME = 'arka_bagchi'
-        POSTGRES_PASSWORD = 'tehkitteh24@'
+        POSTGRES_USERNAME = ''
+        POSTGRES_PASSWORD = ''
         POSTGRES_PORT = 5432
-        POSTGRES_DB = 'airbnb_reviews'
+        POSTGRES_DB = ''
 
         self.conn_string = "host=" + str(POSTGRES_HOST) + " port=" + str(POSTGRES_PORT) + " dbname=" + str(POSTGRES_DB) + " user=" + str(POSTGRES_USERNAME) + " password=" + str(POSTGRES_PASSWORD)
         print('PostGRES database to be used: ' + POSTGRES_HOST + ":" + str(POSTGRES_PORT))
