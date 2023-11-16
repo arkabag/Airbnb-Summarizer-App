@@ -43,7 +43,7 @@ from PostgresHelper import PostgresHelper
 import string
 from openai import OpenAI
 
-client = OpenAI(api_key='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')
+client = OpenAI(api_key='INSERT API KEY HERE')
 import os
 import time
 
