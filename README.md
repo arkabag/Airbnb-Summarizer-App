@@ -1,6 +1,6 @@
 #   Overview for AI Airbnb Investment Analysis App
 
-This document provides an enriched overview of our application that leverages AI through LLM frameworks tailored for Airbnb investment analysis, incorporating the graphical user interface (GUI) visuals and functionalities along with the backend NLP logic for investment insights.
+This document provides an overview of our application that leverages AI through LLM frameworks tailored for Airbnb investment analysis, incorporating the graphical user interface (GUI) visuals and functionalities along with the backend NLP logic for investment insights.
 
 ## Backend Architecture
 
