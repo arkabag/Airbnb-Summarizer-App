@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="/favicon_32.png" sizes="32x32">
+    <link rel="apple-touch-icon-precomposed" href="/favicon_180.png">
+    <link rel="icon" href="/favicon_192.png" sizes="192x192">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="/leaflet/leaflet.css" />
+    <script type="application/javascript" src="/leaflet/leaflet.js"></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+
+    <title>AirDNA: AI Generated Summary of Property Reviews</title>
+
+    <script>
+      $( function() {
+        $( "#accordion" ).accordion();
+      } );
+    </script>
+  <script>
+  $( function() {
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+
+    $( "#propertyname" )
+      // don't navigate away from the field on tab when selecting an item
+      .on( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        source: function( request, response ) {
+          $.getJSON( "/v1/api/property/seek", {
+            term: extractLast( request.term )
+          }, response );
+        },
+        search: function() {
+          // custom minLength
+          var term = extractLast( this.value );
+          if ( term.length < 2 ) {
+            return false;
+          }
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push( ui.item.value );
+          // add placeholder to get the comma-and-space at the end
+          terms.push( "" );
+          this.value = terms.join( " " );
+          return false;
+        }
+      });
+  } );
+  </script>
+    <style>
+        fieldset {
+            border: 0;
+        }
+        label {
+            display: block;
+            margin: 0px 0 0 0;
+        }
+        .overflow {
+            height: 200px;
+        }
+        .dropdown {
+            /* position: absolute; */
+            left: 0px;
+            top: 0px;
+            z-index: 2;
+        }
+        .green-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 5px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .header-row {
+            font-family: Arial;
+            font-size: 32px;
+            height: 20px;
+            padding:10px;
+            width: 70%;
+            align: center;
+            font-weight: bold;
+            text-align: center;
+        }
+        .input-row {
+            font-family: Arial;
+            font-size: 16px;
+            height: 20px;
+            padding:10px;
+            width: 70%;
+            align: center;
+            text-align: center;
+        }
+        .info {
+            font-family: Arial;
+            font-size: 16px;
+            height: 20px;
+            padding:10px;
+            align: center;
+            text-align: center;
+        }
+        .boxed {
+          border: 2px solid black;
+          padding: 10px;
+          border-radius: 10px;
+          font-size: 17px;
+          width: 70%;
+          text-align: left;
+          text-decoration: italics;
+          top: 50%;
+          left: 50%;
+          transform: translate(15%, 0%);
+          background-color: #FFF9E3;
+        }
+        .reviews {
+          padding: 10px;
+          font-size: 16px;
+          width: 70%;
+          text-align: left;
+          top: 50%;
+          left: 50%;
+          transform: translate(15%, 0%);
+        }
+    </style>
+</head>
+
+<body onLoad="drawMap8();">
+<div>
+    <table cellpadding="0" cellspacing="0" border="0" align="center">
+        <tr>
+            <td class="header-row">AirBnB Reviews and their AI Generated Summary</td>
+        </tr>
+    </table>
+    <table cellpadding="0" cellspacing="0" border="0" align="center">
+        <tr>
+            <td>
+                <div id="map8" style="width: calc(100vw - 10px); height: calc(100vh - 200px); z-index: 1;">
+                    <script>
+                        shownOnce = false;
+
+                        function stopIconWithDeviceCount(device_count, min_count, max_count, relative) {
+                            if (!relative) {
+                                min_count = 0;
+                                max_count = 30000;
+                            }
+                            var interval = (max_count + min_count) / 10;
+                            for (let i=0; i<10; i++) {
+                                if ((device_count >= min_count + i * interval) && (device_count < min_count + (i+1) * interval)) {
+                                  return '/assets/dots/blue_bullet_' + (i+1)  + '.png';
+                                }
+                            }
+                            return '/assets/dots/blue_bullet_' + 10  + '.png';
+                        }
+
+                        function drawMap8() {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/v1/api/property/list/all',
+                                success: function (mapdata, status) {
+                                    if (status === 'success') {
+                                        var mapParams = {
+                                            center: [mapdata.info.center.lat, mapdata.info.center.lon], // Leaflet strangely needs this reversed
+                                            zoom: Math.min(mapdata.info.zoom, 11)
+                                        };
+
+                                        var inputDataAsJSON = mapdata.data;
+                                        var radius = 4;
+                                        if (typeof mapParams.radius !== 'undefined')
+                                            radius = mapParams.radius;
+
+                                        if (!shownOnce) {
+                                            map = L.map('map8').setView(mapParams.center, mapParams.zoom);
+                                            shownOnce = true;
+                                        } else {
+                                            map.remove();
+                                            map = L.map('map8').setView(mapParams.center, mapParams.zoom);
+                                        }
+                                        min_device_count = mapdata.info.count_min;
+                                        max_device_count = mapdata.info.count_max;
+
+                                        var mapType = 'streets-v11';
+                                        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYXJyaXZhbGlzdGNvcnAiLCJhIjoiY2tjbWdyMGF1MDE0ZTMwbXFzM3kwaDZuZyJ9.q_McenR2LgbITwOhldPAbg', {
+                                            maxZoom: 18,
+                                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                                            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                                            id: 'mapbox/' + mapType,
+                                            tileSize: 512,
+                                            zoomOffset: -1
+                                        }).addTo(map);
+
+                                        L.control.scale().addTo(map);
+
+                                        var HomeIcon = L.Icon.extend({
+                                            options: {
+                                              iconSize: [16, 16],
+                                              iconAnchor: [8, 8],
+                                              popupAnchor: [0, 0],
+                                              shadowSize: [0, 0]
+                                            }
+                                        });
+                                        var homeMarker = new HomeIcon({
+                                          iconUrl: '/assets/dots/home_icon.png'
+                                        });
+
+                                        var poiArray = mapdata.data;
+                                        poiArray.forEach(function(item) {
+                                            var property_desc = item.property_id+':'+item.title.replace(' ', '&nbsp;').replace('\t', '&nbsp;').replace("''", "").replace("'", "");
+                                            L.marker([item.latitude, item.longitude], {
+                                                icon: new HomeIcon({
+                                                    iconUrl: '/assets/dots/home_icon.png'
+                                                })
+                                            }).bindPopup(
+                                                    '<b>Title:</b> ' + item.title +
+                                                    '<br/>Id: ' + item.property_id +
+                                                    '<br/>Type: ' + item.property_type +
+                                                    '<br/>Bedrooms: ' + item.bedrooms +
+                                                    '<br/>Bathrooms: ' + item.bathrooms +
+                                                    '<br/>City: ' + item.city +
+                                                    '<br/>State: ' + item.state +
+                                                    '<br/>ZIP: ' + item.zipcode +
+                                                    '<br/>Latitude: ' + item.latitude +
+                                                    '<br/>Longitude: ' + item.longitude +
+                                                    '<br/>Geohash: ' + item.geohash6 +
+                                                    '<br/><a href="#" onclick="setAndFetchSummary(\''+property_desc+'\');">See summary of reviews</a>'
+                                                ).addTo(map);
+                                        });
+                                    }
+                                },
+                                async: false
+                            });
+                        }
+                    </script>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <!-- javascript:getSummary() -->
+    <table cellpadding="0" cellspacing="0" border="0" width="50%" align="center">
+        <tr>
+            <td align="left">
+                <div class="ui-widget">
+                  <label for="propertyname">Property: </label>
+                </div>
+            </td>
+            <td align="left">
+                <div class="ui-widget">
+                  <input id="propertyname" size="50">
+                </div>
+            </td>
+            <td align="right">
+                <button class="green-button" onclick="getSummary()">GET SUMMARY</button>
+            </td>
+        </tr>
+    </table>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr class="header-row" valign="bottom">
+            <td class="info">
+                <div style="display: none;" class="text-center" id="waiting-div">
+                    <p><span id="waiting"></span></p>
+                </div>
+                <div style="display: none;" class="text-center" id="completed-div">
+                    <p><span id="completed"></span></p>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div id="page-content" style="width: calc(100vw - 10px); height: calc(100vh - 10px); z-index: 1;">
+        <script>
+        function setAndFetchSummary(property_desc) {
+            document.getElementById('propertyname').value = property_desc;
+            getSummary();
+        }
+
+        function getSummary() {
+            var property_components = $('#propertyname').val().split(":");
+            var propertyId = property_components[0]
+
+            $('#waiting').html('Fetching reviews for property Id ' + propertyId + '. Please wait ...');
+            $('#waiting-div').show();
+            $('#completed-div').hide();
+
+            summary_block = $('summary').val()
+
+            $('#summary').html('<p><b>AI Generated Summary:</b></p><p><i></i></p>');
+            $('#critical-review').html('<p><b>AI Generated Critical Review:</b></p><pre></pre>');
+            $('#reviews').html('');
+
+            $.ajax({
+                type: 'GET',
+                url: '/v1/api/reviews/summary/' + propertyId,
+                success: function (propdata, status) {
+                    if (status === 'success') {
+                        var title = propdata.title;
+                        var prop_summary = propdata.data.ai_generated_summary;
+                        var prop_critical_review = propdata.data.ai_generated_critical_review;
+                        var raw_reviews = propdata.data.reviews;
+
+                        $('#summary').html('<p><b>AI Generated Summary:</b></p><p><i>' + prop_summary + '</i></p>');
+
+                        $('#critical-review').html('<p><b>AI Generated Critical Review:</b></p><pre>' + prop_critical_review + '</pre>');
+
+                        para = '';
+                        for (let i = 0; i < raw_reviews.length; i++) {
+                            para += '<p><b>Review: ' + (i+1) + '</b></p>';
+                            para += '<p>' + raw_reviews[i] + '</p>';
+                        }
+                        $('#reviews').html(para);
+
+                        $('#completed').html('Showing reviews for property Id ' + propertyId + '&nbsp;<a target="_new" href="https://app.airdna.co/data/listing/abnb_' + propertyId + '">AirDNA</a>&nbsp;&nbsp;<a target="_new" href="https://www.airbnb.com/rooms/' + propertyId + '">AirBnB</a>');
+                        $('#completed-div').show();
+                        $('#waiting-div').hide();
+
+                    }
+                },
+                async: true
+            });
+        }
+        </script>
+        <div align="center" id="summary" class="boxed"></div>
+        <p/>
+        <div align="center" id="critical-review" class="boxed"></div>
+        <p/>
+        <div class="reviews" id="reviews"></div>
+    </div>
+</div>
+
+</body>
+</html>
